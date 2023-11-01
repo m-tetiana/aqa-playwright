@@ -4,26 +4,15 @@ test.describe('Registration', () => {
 
     async function openRegistrationPopup(page) {
         return await test.step('Open registration popup', async () => {
-            await page.goto('/')
+            const signUpButton = page.locator('.hero-descriptor_btn.btn.btn-primary')
+            await expect(signUpButton, 'Sign up button should be visible').toBeVisible()
+            await expect(signUpButton, 'Sign up button should be enabled').toBeEnabled()
 
-            const signInButton = page.locator('button.header_signin')
-            await expect(signInButton, 'Sign in button should be visible').toBeVisible()
-            await expect(signInButton, 'Sign in button should be enabled').toBeEnabled()
-
-            await signInButton.click()
-
+            await signUpButton.click()
             const popup = page.locator('div.modal-dialog')
 
-            const loginPopup = popup.filter({has: page.locator('h4.modal-title', {hasText: 'Log in'})})
-            await expect(loginPopup, 'Sign in popup should be visible').toBeVisible()
-
-            const registrationButton = loginPopup.locator('.modal-footer .btn-link')
-            await registrationButton.click()
-
-            const registrationPopup = popup.filter({has: page.locator('h4.modal-title', {hasText: 'Registration'})})
-            await expect(registrationPopup, 'Registration popup should be visible').toBeVisible()
-
-            return registrationPopup
+            await expect(popup, 'Registration popup should be visible').toBeVisible()
+            return popup
         })
     }
 
@@ -42,6 +31,7 @@ test.describe('Registration', () => {
         const email = `aqa-mike.wazowski.${randomString(10)}@monster.co`
         const password = 'Password12345'
 
+        await page.goto('/')
         const registrationPopup = await openRegistrationPopup(page)
 
         const nameInput = registrationPopup.locator('input#signupName')
@@ -67,6 +57,7 @@ test.describe('Registration', () => {
     test('Name is required for registration', async ({page}) => {
         const emptyName = ''
 
+        await page.goto('/')
         const registrationPopup = await openRegistrationPopup(page)
 
         const nameInput = registrationPopup.locator('input#signupName')
@@ -87,6 +78,7 @@ test.describe('Registration', () => {
     test('Last Name should be correct', async ({page}) => {
         const incorrectLastName = 'W'
 
+        await page.goto('/')
         const registrationPopup = await openRegistrationPopup(page)
 
         const nameInput = registrationPopup.locator('input#signupName')
@@ -107,6 +99,7 @@ test.describe('Registration', () => {
     test('Email is required for registration', async ({page}) => {
         const emptyEmail = ''
 
+        await page.goto('/')
         const registrationPopup = await openRegistrationPopup(page)
 
         const nameInput = registrationPopup.locator('input#signupName')
@@ -127,6 +120,7 @@ test.describe('Registration', () => {
     test('Password should be correct', async ({page}) => {
         const invalidPassword = 'password'
 
+        await page.goto('/')
         const registrationPopup = await openRegistrationPopup(page)
 
         const nameInput = registrationPopup.locator('input#signupName')
@@ -148,6 +142,7 @@ test.describe('Registration', () => {
         const password = 'Password123'
         const repeatPassword = 'Password1'
 
+        await page.goto('/')
         const registrationPopup = await openRegistrationPopup(page)
 
         const nameInput = registrationPopup.locator('input#signupName')
