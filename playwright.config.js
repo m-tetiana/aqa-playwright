@@ -1,5 +1,5 @@
 // @ts-check
-const { defineConfig, devices } = require('@playwright/test');
+import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Read environment variables from file.
@@ -10,7 +10,7 @@ const { defineConfig, devices } = require('@playwright/test');
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
-module.exports = defineConfig({
+const config = defineConfig({
   testDir: './tests',
   testMatch: 'tests/**/*.spec.js',
   /* Run tests in files in parallel */
@@ -82,3 +82,4 @@ module.exports = defineConfig({
   // },
 });
 
+export default config
