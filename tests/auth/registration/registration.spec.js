@@ -1,25 +1,21 @@
-import {expect, test} from '@playwright/test';
+import {test} from '@playwright/test'
+import WelcomePage from '../../../src/pageObjects/welcomePage/WelcomePage.js'
 
-test.describe('Registration', () => {
+test.describe.only('Registration', () => {
+    let welcomePage
+    let registrationPopup
 
-    async function openRegistrationPopup(page) {
-        return await test.step('Open registration popup', async () => {
-            const signUpButton = page.locator('.hero-descriptor_btn.btn.btn-primary')
-            await expect(signUpButton, 'Sign up button should be visible').toBeVisible()
-            await expect(signUpButton, 'Sign up button should be enabled').toBeEnabled()
+    test.beforeEach(async ({page}) => {
+        welcomePage = new WelcomePage(page)
+        await welcomePage.navigate()
 
-            await signUpButton.click()
-            const popup = page.locator('div.modal-dialog')
-
-            await expect(popup, 'Registration popup should be visible').toBeVisible()
-            return popup
-        })
-    }
+        registrationPopup = await welcomePage.openRegistrationPopup()
+    })
 
     function randomString(length) {
         const charset = 'abcdefghijklmnopqrstuvwxyz0123456789'
         const result = []
-        for(let i = 0; i < length; i++) {
+        for (let i = 0; i < length; i++) {
             result.push(charset.charAt(Math.floor(Math.random() * charset.length)))
         }
         return result.join('')
@@ -31,135 +27,68 @@ test.describe('Registration', () => {
         const email = `aqa-mike.wazowski.${randomString(10)}@monster.co`
         const password = 'Password12345'
 
-        await page.goto('/')
-        const registrationPopup = await openRegistrationPopup(page)
+        await registrationPopup.fillName(name)
+        await registrationPopup.fillLastName(lastName)
+        await registrationPopup.fillEmail(email)
+        await registrationPopup.fillPassword(password)
+        await registrationPopup.fillRepeatPassword(password)
 
-        const nameInput = registrationPopup.locator('input#signupName')
-        const lastNameInput = registrationPopup.locator('input#signupLastName')
-        const emailInput = registrationPopup.locator('input#signupEmail')
-        const passwordInput = registrationPopup.locator('input#signupPassword')
-        const repeatPasswordInput = registrationPopup.locator('input#signupRepeatPassword')
-        const registerButton = registrationPopup.locator('.btn-primary')
+        await registrationPopup.checkRegisterButtonIsEnabled()
 
-        await nameInput.fill(name)
-        await lastNameInput.fill(lastName)
-        await emailInput.fill(email)
-        await passwordInput.fill(password)
-        await repeatPasswordInput.fill(password)
-
-        await expect(registerButton, 'Register button should be visible').toBeVisible()
-        await expect(registerButton, 'Register button should be enabled').toBeEnabled()
-
-        await registerButton.click()
-        await expect(page).toHaveURL('/panel/garage')
+        const garagePage = await registrationPopup.clickRegisterButton()
+        await garagePage.waitLoaded()
     })
 
     test('Name is required for registration', async ({page}) => {
         const emptyName = ''
 
-        await page.goto('/')
-        const registrationPopup = await openRegistrationPopup(page)
+        await registrationPopup.fillName(emptyName)
+        await registrationPopup.focusOnRepeatPasswordInput()
 
-        const nameInput = registrationPopup.locator('input#signupName')
-        const lastNameInput = registrationPopup.locator('input#signupLastName')
-        const registerButton = registrationPopup.locator('.btn-primary')
-
-        await nameInput.fill(emptyName)
-        await lastNameInput.focus()
-
-        const nameErrorMessage = registrationPopup.locator('div.invalid-feedback')
-        await expect(nameErrorMessage, 'Error message should be shown when user has not entered Name').toHaveText('Name required')
-
-        await expect(nameInput, 'Name input should have red border when user has not entered Name').toHaveCSS('border-color', 'rgb(220, 53, 69)')
-        await expect(registerButton, 'Register button should be visible').toBeVisible()
-        await expect(registerButton, 'Register button should be disabled').toBeDisabled()
+        await registrationPopup.checkErrorMessage('Name required')
+        await registrationPopup.checkRegisterButtonIsDisabled()
     })
 
     test('Last Name should be correct', async ({page}) => {
         const incorrectLastName = 'W'
 
-        await page.goto('/')
-        const registrationPopup = await openRegistrationPopup(page)
+        await registrationPopup.fillLastName(incorrectLastName)
+        await registrationPopup.focusOnRepeatPasswordInput()
 
-        const nameInput = registrationPopup.locator('input#signupName')
-        const lastNameInput = registrationPopup.locator('input#signupLastName')
-        const registerButton = registrationPopup.locator('.btn-primary')
-
-        await lastNameInput.fill(incorrectLastName)
-        await nameInput.focus()
-
-        const lastNameErrorMessage = registrationPopup.locator('div.invalid-feedback')
-        await expect(lastNameErrorMessage, 'Error message should be shown when user entered invalid Last Name').toHaveText('Last name has to be from 2 to 20 characters long')
-        await expect(lastNameInput, 'Last Name input should have red border after the user entered invalid Last Name').toHaveCSS('border-color', 'rgb(220, 53, 69)')
-
-        await expect(registerButton, 'Register button should be visible').toBeVisible()
-        await expect(registerButton, 'Register button should be disabled').toBeDisabled()
+        await registrationPopup.checkErrorMessage('Last name has to be from 2 to 20 characters long')
+        await registrationPopup.checkRegisterButtonIsDisabled()
     })
 
     test('Email is required for registration', async ({page}) => {
         const emptyEmail = ''
 
-        await page.goto('/')
-        const registrationPopup = await openRegistrationPopup(page)
+        await registrationPopup.fillEmail(emptyEmail)
+        await registrationPopup.focusOnRepeatPasswordInput()
 
-        const nameInput = registrationPopup.locator('input#signupName')
-        const emailInput = registrationPopup.locator('input#signupEmail')
-        const registerButton = registrationPopup.locator('.btn-primary')
-
-        await emailInput.fill(emptyEmail)
-        await nameInput.focus()
-
-        const emailErrorMessage = registrationPopup.locator('div.invalid-feedback')
-        await expect(emailErrorMessage, 'Error message should be shown when user has not entered Email').toHaveText('Email required')
-        await expect(emailInput, 'Email input should have red border when user has not entered Email').toHaveCSS('border-color', 'rgb(220, 53, 69)')
-
-        await expect(registerButton, 'Register button should be visible').toBeVisible()
-        await expect(registerButton, 'Register button should be disabled').toBeDisabled()
+        await registrationPopup.checkErrorMessage('Email required')
+        await registrationPopup.checkRegisterButtonIsDisabled()
     })
 
     test('Password should be correct', async ({page}) => {
         const invalidPassword = 'password'
 
-        await page.goto('/')
-        const registrationPopup = await openRegistrationPopup(page)
+        await registrationPopup.fillPassword(invalidPassword)
+        await registrationPopup.focusOnRepeatPasswordInput()
 
-        const nameInput = registrationPopup.locator('input#signupName')
-        const passwordInput = registrationPopup.locator('input#signupPassword')
-        const registerButton = registrationPopup.locator('.btn-primary')
-
-        await passwordInput.fill(invalidPassword)
-        await nameInput.focus()
-
-        const passwordErrorMessage = registrationPopup.locator('div.invalid-feedback')
-        await expect(passwordErrorMessage, 'Error message should be shown when user entered invalid Password').toHaveText('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter')
-        await expect(passwordInput, 'Password input should have red border when user entered invalid Password').toHaveCSS('border-color', 'rgb(220, 53, 69)')
-
-        await expect(registerButton, 'Register button should be visible').toBeVisible()
-        await expect(registerButton, 'Register button should be disabled').toBeDisabled()
+        await registrationPopup.checkErrorMessage('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter')
+        await registrationPopup.checkRegisterButtonIsDisabled()
     })
 
     test('Passwords should match', async ({page}) => {
         const password = 'Password123'
         const repeatPassword = 'Password1'
 
-        await page.goto('/')
-        const registrationPopup = await openRegistrationPopup(page)
+        await registrationPopup.fillPassword(password)
+        await registrationPopup.fillRepeatPassword(repeatPassword)
+        await registrationPopup.focusOnNameInput()
 
-        const nameInput = registrationPopup.locator('input#signupName')
-        const passwordInput = registrationPopup.locator('input#signupPassword')
-        const repeatPasswordInput = registrationPopup.locator('input#signupRepeatPassword')
-        const registerButton = registrationPopup.locator('.btn-primary')
-
-        await passwordInput.fill(password)
-        await repeatPasswordInput.fill(repeatPassword)
-        await nameInput.focus()
-
-        const repeatPasswordErrorMessage = registrationPopup.locator('div.invalid-feedback')
-        await expect(repeatPasswordErrorMessage, 'Error message should be shown when user entered wrong password in the Re-enter Password').toHaveText('Passwords do not match')
-        await expect(repeatPasswordInput, 'Re-enter Password input should have red border when user entered invalid Password').toHaveCSS('border-color', 'rgb(220, 53, 69)')
-
-        await expect(registerButton, 'Register button should be visible').toBeVisible()
-        await expect(registerButton, 'Register button should be disabled').toBeDisabled()
+        await registrationPopup.checkErrorMessage('Passwords do not match')
+        await registrationPopup.checkRegisterButtonIsDisabled()
     })
 
 })
