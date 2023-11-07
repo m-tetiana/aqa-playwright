@@ -1,5 +1,5 @@
 // @ts-check
-const { defineConfig, devices } = require('@playwright/test');
+import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Read environment variables from file.
@@ -10,7 +10,7 @@ const { defineConfig, devices } = require('@playwright/test');
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
-module.exports = defineConfig({
+const config = defineConfig({
   testDir: './tests',
   testMatch: 'tests/**/*.spec.js',
   /* Run tests in files in parallel */
@@ -25,15 +25,19 @@ module.exports = defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
+    headless: false,
     httpCredentials: {
       username: 'guest',
-      password: 'superstrongpassword'
+      password: 'welcome2qauto'
     },
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: 'https://qauto.forstudy.space',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    launchOptions:{
+      slowMo: 1000
+    }
   },
 
   /* Configure projects for major browsers */
@@ -82,3 +86,4 @@ module.exports = defineConfig({
   // },
 });
 
+export default config

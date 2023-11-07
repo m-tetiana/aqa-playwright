@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test",
-    "test:ui": "npx playwright test --ui",
+    "test:ui": "npx playwright test --ui --project=chromium",
     "report": "npx playwright show-report"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "devDependencies": {
     "@playwright/test": "^1.39.0",
     "@types/node": "^20.8.9"
