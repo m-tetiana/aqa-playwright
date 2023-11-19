@@ -1,7 +1,7 @@
 import {test} from '@playwright/test'
 import WelcomePage from '../../../src/pageObjects/welcomePage/WelcomePage.js'
 
-test.describe.only('Registration @smoke', () => {
+test.describe('Registration @smoke', () => {
     let welcomePage
     let registrationPopup
 
