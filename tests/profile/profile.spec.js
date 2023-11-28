@@ -1,6 +1,6 @@
 import {test} from '../../src/fixtures/test.fixtures.js'
 import {expect} from "@playwright/test";
-import {MOCKED_USER_PROFILE_RESPONSE} from '../../src/data/dictionaries/users.js';
+import {MOCKED_USER_PROFILE_RESPONSE} from '../fixtures/users.js';
 
 test.describe('User profile', () => {
     test('page should contain correct user name', async ({userGaragePage}) => {
