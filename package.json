@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test --project=chromium",
+    "test:api": "npx playwright test -c playwright.config.api.js",
     "test:smoke": "npx playwright test -c playwright.config.smoke.js",
     "test:ui": "npx playwright test --ui --project=chromium",
     "report": "npx playwright show-report"
@@ -18,6 +19,9 @@
     "@types/node": "^20.8.9"
   },
   "dependencies": {
-    "dotenv": "^16.3.1"
+    "axios": "^1.6.2",
+    "axios-cookiejar-support": "^4.0.7",
+    "dotenv": "^16.3.1",
+    "tough-cookie": "^4.1.3"
   }
 }
