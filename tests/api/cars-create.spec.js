@@ -2,6 +2,7 @@ import {test} from "../../src/fixtures/test.fixtures.js";
 import {expect} from "@playwright/test";
 import {VALID_BRANDS_RESPONSE_BODY} from "../../src/data/dictionaries/brands.js";
 import {VALID_BRAND_MODELS_RESPONSE_BODY} from "../../src/data/dictionaries/brandModels.js";
+import CreateCarModel from "../../src/models/cars/CreateCarModel.js";
 
 test.describe('Create cars API', () => {
 
@@ -14,14 +15,7 @@ test.describe('Create cars API', () => {
     })
 
     test('should create new car', async ({testUserAPIClient: client}) => {
-        const brandId = VALID_BRANDS_RESPONSE_BODY.data[0].id
-        const modelId = VALID_BRAND_MODELS_RESPONSE_BODY.data.find(model => model.carBrandId === brandId).id
-
-        const requestBody = {
-            "carBrandId": brandId,
-            "carModelId": modelId,
-            "mileage": 155
-        }
+        const requestBody = CreateCarModel.withRandomData().extract()
 
         const response = await client.cars.createUserCar(requestBody)
         const body = response.data
@@ -33,14 +27,8 @@ test.describe('Create cars API', () => {
     })
 
     test('should be returned not found error for invalid brand id', async ({testUserAPIClient: client}) => {
-        const brandId = 8888
-        const modelId = 8888
-
-        const requestBody = {
-            "carBrandId": brandId,
-            "carModelId": modelId,
-            "mileage": 140
-        }
+        const invalidBrandId = 8888
+        const requestBody = CreateCarModel.withRandomData().withBrandId(invalidBrandId).extract()
 
         const response = await client.cars.createUserCar(requestBody)
         const body = response.data
@@ -51,14 +39,8 @@ test.describe('Create cars API', () => {
     })
 
     test('should be returned not found error for invalid model id', async ({testUserAPIClient: client}) => {
-        const brandId = VALID_BRANDS_RESPONSE_BODY.data[0].id
-        const modelId = 9999
-
-        const requestBody = {
-            "carBrandId": brandId,
-            "carModelId": modelId,
-            "mileage": 150
-        }
+        const invalidModelId = 9999
+        const requestBody = CreateCarModel.withRandomData().withModelId(invalidModelId).extract()
 
         const response = await client.cars.createUserCar(requestBody)
         const body = response.data
