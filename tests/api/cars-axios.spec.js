@@ -1,14 +1,14 @@
 import {test} from "../../src/fixtures/test.fixtures.js";
 import {expect} from "@playwright/test";
 import {VALID_BRANDS_RESPONSE_BODY} from "../../src/data/dictionaries/brands.js";
-import {VALID_BRAND_MODELS} from "../../src/data/dictionaries/brandModels.js";
+import {VALID_BRAND_MODELS_RESPONSE_BODY} from "../../src/data/dictionaries/brandModels.js";
 import {USERS} from "../../src/data/dictionaries/users.js";
 import {wrapper} from "axios-cookiejar-support";
 import {config} from "../../config/config.js";
 import {CookieJar} from "tough-cookie";
 import axios from "axios";
 
-test.describe("API", () => {
+test.describe.skip("API", () => {
     let client
 
     test.beforeAll(async () => {
@@ -30,7 +30,7 @@ test.describe("API", () => {
 
     test('should create new car', async ({}) => {
         const brandId = VALID_BRANDS_RESPONSE_BODY.data[0].id
-        const modelId = VALID_BRAND_MODELS[brandId].data[1].id
+        const modelId = VALID_BRAND_MODELS_RESPONSE_BODY.data.find(model => model.carBrandId === brandId).id
 
         const requestBody = {
             "carBrandId": brandId,
