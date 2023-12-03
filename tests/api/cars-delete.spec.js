@@ -26,6 +26,10 @@ test.describe('Delete cars API', () => {
         defaultUserCar = getResponse.data.data
     })
 
+    test.afterEach(async ({newUserAPIClient: client}) => {
+        await client.cars.deleteUserCar(defaultUserCar.id)
+    })
+
     test('should delete a user car', async ({newUserAPIClient: client}) => {
         const response = await client.cars.deleteUserCar(defaultUserCar.id)
         const body = response.data

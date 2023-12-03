@@ -26,6 +26,10 @@ test.describe('Update cars API', () => {
         defaultUserCar = getResponse.data.data
     })
 
+    test.afterEach(async ({newUserAPIClient: client}) => {
+        await client.cars.deleteUserCar(defaultUserCar.id)
+    })
+
     test('should update existing car', async ({newUserAPIClient: client}) => {
 
         const newModelId = VALID_BRAND_MODELS_RESPONSE_BODY.data.filter(model => model.carBrandId === defaultUserCar.carBrandId)[1].id

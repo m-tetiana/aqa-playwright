@@ -9,7 +9,7 @@ test.describe('Brands API', () => {
         const body = response.data
 
         expect(response.status, 'Status code should be 200').toEqual(200)
-        expect(body, 'Response should have correct car brands').toMatchObject(VALID_BRANDS_RESPONSE_BODY)
+        expect(body, 'Response should have correct car brands').toEqual(VALID_BRANDS_RESPONSE_BODY)
     })
 
     test('should return car brand by id', async ({testUserAPIClient: client}) => {
@@ -20,7 +20,7 @@ test.describe('Brands API', () => {
 
         expect(response.status, 'Status code should be 200').toEqual(200)
         expect(body.status, 'Response should have correct status').toBe('ok')
-        expect(body.data, 'Response should have correct car brand').toMatchObject(expectedBrand)
+        expect(body.data, 'Response should have correct car brand').toEqual(expectedBrand)
     })
 
     test('should return not found error when brand does not exist', async ({testUserAPIClient: client}) => {

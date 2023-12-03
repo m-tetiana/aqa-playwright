@@ -5,6 +5,14 @@ import {VALID_BRAND_MODELS_RESPONSE_BODY} from "../../src/data/dictionaries/bran
 
 test.describe('Create cars API', () => {
 
+    let createdCarsIds = []
+
+    test.afterEach(async ({testUserAPIClient: client}) => {
+        for (const carId of createdCarsIds) {
+            await client.cars.deleteUserCar(carId)
+        }
+    })
+
     test('should create new car', async ({testUserAPIClient: client}) => {
         const brandId = VALID_BRANDS_RESPONSE_BODY.data[0].id
         const modelId = VALID_BRAND_MODELS_RESPONSE_BODY.data.find(model => model.carBrandId === brandId).id
@@ -17,6 +25,7 @@ test.describe('Create cars API', () => {
 
         const response = await client.cars.createUserCar(requestBody)
         const body = response.data
+        createdCarsIds.push(body.data.id)
 
         expect(response.status, 'Status code should be 201').toEqual(201)
         expect(body.status).toBe('ok')
@@ -35,6 +44,7 @@ test.describe('Create cars API', () => {
 
         const response = await client.cars.createUserCar(requestBody)
         const body = response.data
+
         expect(response.status, 'Status code should be 404').toEqual(404)
         expect(body.status).toBe('error')
         expect(body.message).toBe('Brand not found')

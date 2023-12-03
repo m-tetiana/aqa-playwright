@@ -26,13 +26,17 @@ test.describe('Get cars API', () => {
         defaultUserCar = getResponse.data.data
     })
 
+    test.afterEach(async ({newUserAPIClient: client}) => {
+        await client.cars.deleteUserCar(defaultUserCar.id)
+    })
+
     test('should return all user cars', async ({newUserAPIClient: client}) => {
         const response = await client.cars.getUserCars()
         const body = response.data
 
         expect(response.status, 'Status code should be 200').toEqual(200)
         expect(body.status).toBe('ok')
-        expect(body.data, 'Should have a list of user cars').toMatchObject([defaultUserCar])
+        expect(body.data, 'Should have a list of user cars').toEqual([defaultUserCar])
     })
 
     test('should return user car by id', async ({newUserAPIClient: client}) => {
@@ -41,7 +45,7 @@ test.describe('Get cars API', () => {
 
         expect(response.status, 'Status code should be 200').toEqual(200)
         expect(body.status).toBe('ok')
-        expect(body.data, 'Should have a car data').toMatchObject(defaultUserCar)
+        expect(body.data, 'Should have a car data').toEqual(defaultUserCar)
     })
 
     test('should not found error when car does not exist', async ({newUserAPIClient: client}) => {

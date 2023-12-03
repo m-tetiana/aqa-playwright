@@ -21,7 +21,7 @@ test.describe('Models API', () => {
 
         expect(response.status, 'Status code should be 200').toEqual(200)
         expect(body.status, 'Response should have correct status').toBe('ok')
-        expect(body.data, 'Response should have correct car models').toMatchObject(expectedModels)
+        expect(body.data, 'Response should have correct car models').toEqual(expectedModels)
     })
 
     test('should return not found error when brand does not exist', async ({testUserAPIClient: client}) => {
@@ -44,7 +44,7 @@ test.describe('Models API', () => {
 
         expect(response.status, 'Status code should be 200').toEqual(200)
         expect(body.status, 'Response should have correct status').toBe('ok')
-        expect(body.data, 'Response should have correct car model').toMatchObject(expectedModel)
+        expect(body.data, 'Response should have correct car model').toEqual(expectedModel)
     })
 
     test('should return not found error when model does not exist', async ({testUserAPIClient: client}) => {

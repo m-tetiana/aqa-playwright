@@ -8,7 +8,7 @@ import {config} from "../../config/config.js";
 import {CookieJar} from "tough-cookie";
 import axios from "axios";
 
-test.describe("API", () => {
+test.describe.skip("API", () => {
     let client
 
     test.beforeAll(async () => {
