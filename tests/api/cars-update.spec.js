@@ -2,21 +2,15 @@ import {test} from "../../src/fixtures/test.fixtures.js";
 import {expect} from "@playwright/test";
 import {VALID_BRANDS_RESPONSE_BODY} from "../../src/data/dictionaries/brands.js";
 import {VALID_BRAND_MODELS_RESPONSE_BODY} from "../../src/data/dictionaries/brandModels.js";
+import CreateCarModel from "../../src/models/cars/CreateCarModel.js";
+import UpdateCarModel from "../../src/models/cars/UpdateCarModel.js";
 
 test.describe('Update cars API', () => {
 
     let defaultUserCar
 
     test.beforeEach(async ({newUserAPIClient: client}) => {
-        const brandId = VALID_BRANDS_RESPONSE_BODY.data[0].id
-        const modelId = VALID_BRAND_MODELS_RESPONSE_BODY.data.find(model => model.carBrandId === brandId).id
-
-        const requestBody = {
-            'carBrandId': brandId,
-            'carModelId': modelId,
-            'mileage': 122
-        }
-
+        const requestBody = CreateCarModel.withRandomData().extract()
         const createResponse = await client.cars.createUserCar(requestBody)
 
         //Create car returns not rounded dates, but get endpoints return dates with 000 millis
@@ -31,15 +25,7 @@ test.describe('Update cars API', () => {
     })
 
     test('should update existing car', async ({newUserAPIClient: client}) => {
-
-        const newModelId = VALID_BRAND_MODELS_RESPONSE_BODY.data.filter(model => model.carBrandId === defaultUserCar.carBrandId)[1].id
-
-        const requestBody = {
-            'carBrandId': defaultUserCar.carBrandId,
-            'carModelId': newModelId,
-            'mileage': 155
-        }
-
+        const requestBody = UpdateCarModel.withRandomData(defaultUserCar.mileage).extract()
 
         const response = await client.cars.updateUserCar(defaultUserCar.id, requestBody)
         const body = response.data
@@ -59,12 +45,7 @@ test.describe('Update cars API', () => {
 
     test('should be returned not found error when trying to update not existing car', async ({testUserAPIClient: client}) => {
         const invalidCarId = 999999
-
-        const requestBody = {
-            'carBrandId': defaultUserCar.carBrandId,
-            'carModelId': defaultUserCar.carModelId,
-            'mileage': 155
-        }
+        const requestBody = UpdateCarModel.withRandomData(defaultUserCar.mileage).extract()
 
         const response = await client.cars.updateUserCar(invalidCarId, requestBody)
         const body = response.data

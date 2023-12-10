@@ -2,21 +2,14 @@ import {test} from "../../src/fixtures/test.fixtures.js";
 import {expect} from "@playwright/test";
 import {VALID_BRANDS_RESPONSE_BODY} from "../../src/data/dictionaries/brands.js";
 import {VALID_BRAND_MODELS_RESPONSE_BODY} from "../../src/data/dictionaries/brandModels.js";
+import CreateCarModel from "../../src/models/cars/CreateCarModel.js";
 
 test.describe('Get cars API', () => {
 
     let defaultUserCar
 
     test.beforeEach(async ({newUserAPIClient: client}) => {
-        const brandId = VALID_BRANDS_RESPONSE_BODY.data[0].id
-        const modelId = VALID_BRAND_MODELS_RESPONSE_BODY.data.find(model => model.carBrandId === brandId).id
-
-        const requestBody = {
-            'carBrandId': brandId,
-            'carModelId': modelId,
-            'mileage': 122
-        }
-
+        const requestBody = CreateCarModel.withRandomData().extract()
         const createResponse = await client.cars.createUserCar(requestBody)
 
         //Create car returns not rounded dates, but get endpoints return dates with 000 millis

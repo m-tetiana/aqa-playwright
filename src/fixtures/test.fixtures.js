@@ -7,6 +7,7 @@ import {config} from "../../config/config.js";
 import {CookieJar} from "tough-cookie";
 import UserController from "../controllers/UserController.js";
 import AuthController from "../controllers/AuthController.js";
+import SignUpModel from "../models/auth/SignUpModel.js";
 
 export const test = base.extend({
         userInfo: USERS.TEST_USER,
@@ -42,13 +43,7 @@ export const test = base.extend({
         },
 
         newUserAPIClient: async ({}, use) => {
-            const userData = {
-                "name": "New",
-                "lastName": "User",
-                "email": `aqa.new.test.user.${Date.now()}@test.com`,
-                "password": "Qwerty12345",
-                "repeatPassword": "Qwerty12345"
-            }
+            const userData = SignUpModel.withRandomData().extract()
 
             await new AuthController().signUp(userData)
             const newUserClient = await APIClient.authenticate({
