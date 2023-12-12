@@ -5,8 +5,10 @@ services:
     container_name: "automated-test"
     build:
       context: .
-      args:
-        BASE_URL: ${BASE_URL}
-        API_URL: ${API_URL}
-        HTTP_CREDENTIALS_USERNAME: ${HTTP_CREDENTIALS_USERNAME}
-        HTTP_CREDENTIALS_PASSWORD: ${HTTP_CREDENTIALS_PASSWORD}
+    environment:
+      BASE_URL: https://qauto.forstudy.space
+      API_URL: https://qauto.forstudy.space/api
+      HTTP_CREDENTIALS_USERNAME: ${HTTP_CREDENTIALS_USERNAME}
+      HTTP_CREDENTIALS_PASSWORD: ${HTTP_CREDENTIALS_PASSWORD}
+    volumes:
+      - ./docker-playwright-report:/aqa-playwright/playwright-report
