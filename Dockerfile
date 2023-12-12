@@ -5,4 +5,4 @@ WORKDIR /aqa-playwright
 
 RUN npm ci
 
-CMD ["npm", "test"]
+CMD ["npm", "run", "test:ci"]

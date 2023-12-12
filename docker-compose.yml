@@ -10,5 +10,6 @@ services:
       API_URL: https://qauto.forstudy.space/api
       HTTP_CREDENTIALS_USERNAME: ${HTTP_CREDENTIALS_USERNAME}
       HTTP_CREDENTIALS_PASSWORD: ${HTTP_CREDENTIALS_PASSWORD}
+      CI: 1
     volumes:
       - ./docker-playwright-report:/aqa-playwright/playwright-report

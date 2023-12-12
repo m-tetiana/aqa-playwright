@@ -8,6 +8,7 @@
     "test:api": "npx playwright test -c playwright.config.api.js",
     "test:smoke": "npx playwright test -c playwright.config.smoke.js",
     "test:ui": "npx playwright test --ui --project=chromium",
+    "test:ci": "npx playwright test -c playwright.config.ci.js",
     "report": "npx playwright show-report"
   },
   "keywords": [],
